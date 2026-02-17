@@ -9,6 +9,7 @@ export default defineConfig({
       '/check': 'http://localhost:8000',
       '/check-from-image': 'http://localhost:8000',
       '/chat': 'http://localhost:8000',
+      '/clinical-advice': 'http://localhost:8000',
       '/drugs': 'http://localhost:8000',
     },
   },

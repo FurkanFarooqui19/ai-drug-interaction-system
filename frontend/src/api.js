@@ -3,7 +3,7 @@
  * In dev, call backend directly to avoid proxy 404s. In build, use same origin (or set VITE_API_URL).
  */
 const API_BASE = typeof import.meta !== 'undefined' && import.meta.env?.DEV
-  ? (import.meta.env.VITE_API_URL || 'http://localhost:8000')
+  ? (import.meta.env.VITE_API_URL || 'http://localhost:8001')
   : (import.meta.env?.VITE_API_URL || '')
 
 export async function checkInteractions(drugs) {
@@ -54,4 +54,24 @@ export async function sendChatMessage(message) {
   }
   const data = await res.json()
   return data.reply
+}
+
+/** Clinical decision-support: alternatives, duration, safety. Requires drugs, severity; optional age, disease, symptoms. */
+export async function getClinicalAdvice({ drugs, severity, age, disease, symptoms }) {
+  const res = await fetch(`${API_BASE}/clinical-advice`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      drugs,
+      severity: severity || 'Safe',
+      age: age || null,
+      disease: disease || null,
+      symptoms: symptoms || null,
+    }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }))
+    throw new Error(err.detail || res.statusText)
+  }
+  return res.json()
 }

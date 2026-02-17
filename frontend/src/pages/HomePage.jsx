@@ -11,6 +11,7 @@ import SearchHistory from '../components/SearchHistory'
 import RiskBadge from '../components/RiskBadge'
 import WarningCard from '../components/WarningCard'
 import RiskMeter from '../components/RiskMeter'
+import ClinicalGuidanceCard from '../components/ClinicalGuidanceCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Layout, { Card } from '../components/Layout'
 
@@ -20,6 +21,7 @@ export default function HomePage({ scrollToImageSection }) {
   const [drugSuggestions, setDrugSuggestions] = useState([])
   const [imageFile, setImageFile] = useState(null)
   const [result, setResult] = useState(null)
+  const [lastCheckedDrugs, setLastCheckedDrugs] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [history, setHistory] = useState([])
@@ -48,6 +50,7 @@ export default function HomePage({ scrollToImageSection }) {
     try {
       const data = await checkInteractions(drugs)
       setResult(data)
+      setLastCheckedDrugs(drugs)
       addToHistory(drugs, data.risk)
       setHistory(getHistory())
     } catch (err) {
@@ -70,8 +73,11 @@ export default function HomePage({ scrollToImageSection }) {
       setResult(data)
       const drugs = data.detected_drugs && data.detected_drugs.length >= 2 ? data.detected_drugs : null
       if (drugs) {
+        setLastCheckedDrugs(drugs)
         addToHistory(drugs, data.risk, true)
         setHistory(getHistory())
+      } else if (data.detected_drugs?.length) {
+        setLastCheckedDrugs(data.detected_drugs)
       }
     } catch (err) {
       setError(err.message || 'Could not process image. Add GEMINI_API_KEY to backend .env.')
@@ -207,6 +213,10 @@ export default function HomePage({ scrollToImageSection }) {
               </div>
             </div>
             <WarningCard message={result.message} aiExplanation={result.ai_explanation} risk={result.risk} />
+            <ClinicalGuidanceCard
+              drugs={lastCheckedDrugs.length >= 1 ? lastCheckedDrugs : (result.detected_drugs || [])}
+              severity={result.risk}
+            />
           </div>
         )}
       </Layout>

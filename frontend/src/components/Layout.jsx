@@ -24,11 +24,13 @@ export function SectionHeader({ title, subtitle, className = '' }) {
   )
 }
 
-export function Card({ children, className = '' }) {
+/** Card: use card-glass for glassmorphism on premium bg, or card-solid-light for solid panels. */
+export function Card({ children, className = '', glass }) {
+  const base = glass
+    ? 'card-glass'
+    : 'rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800/90'
   return (
-    <div
-      className={`rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition dark:border-slate-700/80 dark:bg-slate-800/80 ${className}`}
-    >
+    <div className={`${base} p-6 ${className}`}>
       {children}
     </div>
   )

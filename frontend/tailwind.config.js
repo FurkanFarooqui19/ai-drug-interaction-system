@@ -19,11 +19,25 @@ export default {
       backgroundImage: {
         'gradient-medical': 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%)',
         'gradient-card': 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+        /* Premium app background: mesh-style radial layers (dark mode) */
+        'mesh-dark': 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent), radial-gradient(ellipse 60% 40% at 100% 50%, rgba(99, 102, 241, 0.08), transparent), radial-gradient(ellipse 50% 30% at 0% 80%, rgba(139, 92, 246, 0.06), transparent), radial-gradient(ellipse 100% 100% at 50% 50%, rgba(15, 23, 42, 0.98), transparent)',
+        /* Light mode: soft depth */
+        'mesh-light': 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(14, 165, 233, 0.06), transparent), radial-gradient(ellipse 50% 40% at 100% 100%, rgba(99, 102, 241, 0.04), transparent)',
       },
       boxShadow: {
         'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
         'glass-lg': '0 8px 32px 0 rgba(31, 38, 135, 0.2)',
         'dark-card': '0 4px 24px rgba(0,0,0,0.25)',
+        'glass-dark': '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.05)',
+      },
+      animation: {
+        'glow-slow': 'glow-pulse 8s ease-in-out infinite',
+      },
+      keyframes: {
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+          '50%': { opacity: '0.9', transform: 'scale(1.02)' },
+        },
       },
       backdropBlur: { xs: '2px' },
       transitionDuration: { 400: '400ms' },

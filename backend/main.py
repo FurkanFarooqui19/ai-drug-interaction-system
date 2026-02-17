@@ -339,6 +339,122 @@ async def check_from_image(file: UploadFile = File(...)):
     )
 
 
+# --- Clinical decision-support: alternatives, duration, safety ---
+CLINICAL_ADVICE_SYSTEM = """You are a clinical decision-support AI that assists patients and healthcare learners. You provide safe, general medical guidance and do NOT replace a doctor.
+
+RULES (strict):
+- Never give exact dosage. Never give emergency-critical instructions.
+- Suggest only widely known, generic medicines — never invent rare or experimental drugs.
+- For alternatives, clearly state they must be confirmed by a licensed doctor.
+- Base duration on typical treatment for the condition; if it varies, explain briefly.
+- Always include a short medical disclaimer. Keep tone calm, clear, and patient-friendly.
+- Output ONLY valid JSON with exactly these keys (no markdown, no extra text):
+  "interaction_summary": "1-2 lines summary of the interaction and risk.",
+  "alternative_options": ["option 1 with brief note", "option 2 if applicable"] or [] if severity is Safe,
+  "typical_duration": "General guidance on how long the medicine(s) are usually taken.",
+  "safety_advice": "2-3 short bullet points or one paragraph of important safety advice.",
+  "disclaimer": "One short sentence: this is not medical advice; follow your doctor's prescription."
+"""
+
+
+def _get_clinical_advice(drugs: list[str], severity: str, age: str | None, disease: str | None, symptoms: str | None) -> dict:
+    """Call Gemini for clinical guidance. Returns dict with interaction_summary, alternative_options, typical_duration, safety_advice, disclaimer."""
+    import json
+    import google.generativeai as genai
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="Clinical advice requires GEMINI_API_KEY in .env",
+        )
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(
+        "gemini-2.5-flash",
+        system_instruction=CLINICAL_ADVICE_SYSTEM,
+    )
+    severity_normalized = "Severe" if severity == "Dangerous" else severity
+    context_parts = [f"Medicines: {', '.join(drugs)}.", f"Detected interaction severity: {severity_normalized}."]
+    if age:
+        context_parts.append(f"Patient age (if relevant): {age}.")
+    if disease:
+        context_parts.append(f"Relevant disease/condition: {disease}.")
+    if symptoms:
+        context_parts.append(f"Relevant symptoms: {symptoms}.")
+    prompt = (
+        "Based on the following, provide the JSON output only.\n\n"
+        + "\n".join(context_parts)
+        + "\n\nIf severity is Safe, set alternative_options to []. Otherwise suggest 1-2 safer alternative medicines (common, generic) with similar therapeutic purpose and state they must be confirmed by a doctor."
+    )
+    resp = model.generate_content(prompt)
+    if not resp or not resp.text:
+        raise HTTPException(status_code=502, detail="Empty response from AI")
+    text = resp.text.strip()
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+    text = text.strip()
+    try:
+        out = json.loads(text)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=502, detail="Could not parse clinical advice response")
+
+    # Normalize: Gemini sometimes returns lists for string fields; convert to expected types
+    string_keys = ("interaction_summary", "typical_duration", "safety_advice", "disclaimer")
+    for key in string_keys:
+        val = out.get(key)
+        if val is None:
+            out[key] = ""
+        elif isinstance(val, list):
+            out[key] = "\n".join(str(x) for x in val) if val else ""
+        else:
+            out[key] = str(val) if not isinstance(val, str) else val
+    if "alternative_options" not in out:
+        out["alternative_options"] = []
+    elif not isinstance(out["alternative_options"], list):
+        out["alternative_options"] = [str(out["alternative_options"])] if out["alternative_options"] else []
+    else:
+        out["alternative_options"] = [str(x) for x in out["alternative_options"]]
+    return out
+
+
+class ClinicalAdviceRequest(BaseModel):
+    drugs: list[str]
+    severity: str  # Safe | Moderate | Dangerous
+    age: str | None = None
+    disease: str | None = None
+    symptoms: str | None = None
+
+
+class ClinicalAdviceResponse(BaseModel):
+    interaction_summary: str
+    alternative_options: list[str]
+    typical_duration: str
+    safety_advice: str
+    disclaimer: str
+
+
+@app.post("/clinical-advice", response_model=ClinicalAdviceResponse)
+def clinical_advice(req: ClinicalAdviceRequest):
+    """
+    Clinical decision-support: interaction summary, safer alternatives (if Moderate/Severe),
+    typical duration of use, safety advice, disclaimer. Requires GEMINI_API_KEY.
+    """
+    drugs = [d.strip() for d in req.drugs if d and str(d).strip()]
+    if len(drugs) < 1:
+        raise HTTPException(status_code=400, detail="At least one drug is required.")
+    sev = (req.severity or "Safe").strip()
+    if sev not in ("Safe", "Moderate", "Dangerous"):
+        sev = "Safe"
+    try:
+        out = _get_clinical_advice(drugs, sev, req.age, req.disease, req.symptoms)
+        return ClinicalAdviceResponse(**out)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Clinical advice failed: {str(e)}")
+
+
 # --- Medical Chatbot ---
 class ChatRequest(BaseModel):
     message: str
