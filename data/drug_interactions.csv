@@ -1,0 +1,21 @@
+drug1,drug2,severity,description
+Aspirin,Ibuprofen,major,Combining NSAIDs increases risk of stomach bleeding and ulcers.
+Warfarin,Aspirin,major,Increased bleeding risk when taken together.
+Warfarin,Ibuprofen,major,NSAIDs can increase the anticoagulant effect and bleeding risk.
+Paracetamol,Ibuprofen,moderate,Generally safe short-term; long-term combined use may affect liver and kidneys. Space doses.
+Amoxicillin,Methotrexate,moderate,Methotrexate levels may rise; increased toxicity risk.
+Metformin,Contrast Dye,major,Risk of lactic acidosis; stop metformin before and after imaging with contrast.
+Lithium,NSAIDs,moderate,NSAIDs can increase lithium levels and toxicity risk.
+SSRI,Tramadol,major,Serotonin syndrome risk when combined.
+Omeprazole,Clopidogrel,moderate,PPIs may reduce clopidogrel effectiveness.
+Prednisone,Ibuprofen,moderate,Higher risk of stomach irritation and bleeding.
+Ciprofloxacin,Calcium,major,Calcium can reduce absorption of ciprofloxacin.
+Simvastatin,Grapefruit,major,Grapefruit greatly increases simvastatin levels; avoid.
+Diazepam,Alcohol,major,Sedation and respiratory depression risk.
+Metformin,Alcohol,moderate,Alcohol can increase risk of lactic acidosis with metformin.
+Paracetamol,Warfarin,moderate,High or long-term paracetamol use may affect blood thinning.
+Codeine,Tramadol,major,Increased risk of serotonin syndrome and respiratory depression.
+Aspirin,Clopidogrel,moderate,Often prescribed together for cardiac protection but increases bleeding risk; monitor.
+Digoxin,Amiodarone,major,Amiodarone can raise digoxin levels; dose adjustment needed.
+Potassium,Spironolactone,major,Risk of dangerous potassium levels; avoid unless prescribed.
+ACE Inhibitor,Potassium,major,Risk of hyperkalaemia when combined with potassium supplements.
