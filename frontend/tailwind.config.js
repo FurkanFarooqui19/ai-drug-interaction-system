@@ -29,14 +29,32 @@ export default {
         'glass-lg': '0 8px 32px 0 rgba(31, 38, 135, 0.2)',
         'dark-card': '0 4px 24px rgba(0,0,0,0.25)',
         'glass-dark': '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.05)',
+        'risk-glow-safe': '0 0 40px -8px rgba(16, 185, 129, 0.5)',
+        'risk-glow-moderate': '0 0 40px -8px rgba(245, 158, 11, 0.5)',
+        'risk-glow-dangerous': '0 0 48px -4px rgba(239, 68, 68, 0.5)',
       },
       animation: {
         'glow-slow': 'glow-pulse 8s ease-in-out infinite',
+        'risk-enter': 'risk-enter 0.5s ease-out forwards',
+        'risk-pulse': 'risk-pulse 2s ease-in-out infinite',
+        'bar-fill': 'bar-fill 0.8s ease-out forwards',
       },
       keyframes: {
         'glow-pulse': {
           '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
           '50%': { opacity: '0.9', transform: 'scale(1.02)' },
+        },
+        'risk-enter': {
+          '0%': { opacity: '0', transform: 'scale(0.92) translateY(8px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+        'risk-pulse': {
+          '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.4)' },
+          '50%': { opacity: '1', boxShadow: '0 0 24px 8px rgba(239, 68, 68, 0.25)' },
+        },
+        'bar-fill': {
+          '0%': { width: '0%' },
+          '100%': { width: 'var(--bar-width, 0%)' },
         },
       },
       backdropBlur: { xs: '2px' },

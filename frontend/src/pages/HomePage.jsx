@@ -8,9 +8,10 @@ import DrugInput from '../components/DrugInput'
 import VoiceInputButton from '../components/VoiceInputButton'
 import ImageUpload from '../components/ImageUpload'
 import SearchHistory from '../components/SearchHistory'
-import RiskBadge from '../components/RiskBadge'
-import WarningCard from '../components/WarningCard'
+import RiskStatusCard from '../components/RiskStatusCard'
+import ResultMessageCard from '../components/ResultMessageCard'
 import RiskMeter from '../components/RiskMeter'
+import ResultSkeleton from '../components/ResultSkeleton'
 import ClinicalGuidanceCard from '../components/ClinicalGuidanceCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import Layout, { Card } from '../components/Layout'
@@ -179,9 +180,12 @@ export default function HomePage({ scrollToImageSection }) {
         )}
 
         {loading && (
-          <Card className="mb-6 flex justify-center py-10">
-            <LoadingSpinner />
-          </Card>
+          <div className="mb-6 space-y-6">
+            <ResultSkeleton />
+            <div className="flex justify-center py-4">
+              <LoadingSpinner />
+            </div>
+          </div>
         )}
 
         {error && (
@@ -201,22 +205,26 @@ export default function HomePage({ scrollToImageSection }) {
         {hasResult && (
           <div className="space-y-6">
             {result.detected_drugs?.length > 0 && (
-              <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800 dark:border-sky-800 dark:bg-sky-900/20 dark:text-sky-200">
+              <div className="animate-risk-enter rounded-xl border border-sky-200 bg-sky-50 dark:border-sky-800 dark:bg-sky-900/20 px-4 py-3 text-sm text-sky-800 dark:text-sky-200">
                 <span className="font-semibold">Detected medicines: </span>
                 <span>{result.detected_drugs.join(', ')}</span>
               </div>
             )}
-            <div className="flex flex-col items-center gap-4">
-              <RiskBadge risk={result.risk} />
-              <div className="w-full max-w-xs">
-                <RiskMeter risk={result.risk} />
-              </div>
+            <div className="animate-risk-enter" style={{ animationFillMode: 'forwards' }}>
+              <RiskStatusCard risk={result.risk} />
             </div>
-            <WarningCard message={result.message} aiExplanation={result.ai_explanation} risk={result.risk} />
+            <div className="animate-risk-enter" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
+              <RiskMeter risk={result.risk} />
+            </div>
+            <div className="animate-risk-enter" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+              <ResultMessageCard message={result.message} aiExplanation={result.ai_explanation} risk={result.risk} />
+            </div>
+            <div className="animate-risk-enter" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
             <ClinicalGuidanceCard
               drugs={lastCheckedDrugs.length >= 1 ? lastCheckedDrugs : (result.detected_drugs || [])}
               severity={result.risk}
             />
+            </div>
           </div>
         )}
       </Layout>
