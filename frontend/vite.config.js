@@ -13,4 +13,16 @@ export default defineConfig({
       '/drugs': 'http://localhost:8000',
     },
   },
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'charts':       ['recharts'],
+          'icons':        ['@phosphor-icons/react'],
+        },
+      },
+    },
+  },
 })

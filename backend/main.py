@@ -6,6 +6,7 @@ Set GEMINI_API_KEY in .env — get a free key at https://aistudio.google.com/api
 """
 import io
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -121,11 +122,28 @@ def _chat_with_gemini(user_message: str) -> str:
 
 
 # --- Config ---
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+# Support both local (AI-Drug/data/) and Render deployment (backend/../data/ or backend/data/)
+_BACKEND_DIR = Path(__file__).resolve().parent
+DATA_DIR = (
+    _BACKEND_DIR.parent / "data"
+    if (_BACKEND_DIR.parent / "data").exists()
+    else _BACKEND_DIR / "data"
+)
 CSV_PATH = DATA_DIR / "drug_interactions.csv"
 
 # Global: loaded once at startup
 interactions_df: pd.DataFrame | None = None
+
+
+@asynccontextmanager
+async def lifespan(app):
+    """Load data on startup."""
+    global interactions_df
+    try:
+        interactions_df = load_interactions()
+    except Exception as e:
+        print(f"WARNING: Could not load interaction CSV: {e}")
+    yield
 
 
 def load_interactions() -> pd.DataFrame:
@@ -149,21 +167,23 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
+
+# CORS — allow configured origins (set ALLOWED_ORIGINS env var in production)
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "")
+ALLOWED_ORIGINS = [
+    o.strip() for o in _raw_origins.split(",") if o.strip()
+] if _raw_origins else ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,  # must be False when using wildcard
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
-
-@app.on_event("startup")
-def startup():
-    global interactions_df
-    interactions_df = load_interactions()
 
 
 # --- Request/Response models ---

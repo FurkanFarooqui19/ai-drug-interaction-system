@@ -1,16 +1,31 @@
 # Node
 node_modules/
 dist/
+.cache/
 
 # Python
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Environment
+# Environment — NEVER commit real keys
 .env
+.env.local
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
 
 # OS
 .DS_Store
+Thumbs.db
 
+# IDE
 .cursor
+.vscode/
+*.swp
+
+# Build artifacts
+frontend/dist/
