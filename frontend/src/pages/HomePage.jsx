@@ -138,11 +138,11 @@ export default function HomePage({ scrollToImageSection }) {
         <div className="mx-auto max-w-4xl text-center">
           {/* Shield icon */}
           <div
-            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5"
-            style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 overflow-hidden"
+            style={{ border: '2px solid rgba(255,255,255,0.25)' }}
             aria-hidden="true"
           >
-            <ShieldCheck size={32} weight="fill" color="#fff" />
+            <img src="/logo.jpg" alt="" className="w-full h-full object-cover" width={64} height={64} />
           </div>
 
           <h1

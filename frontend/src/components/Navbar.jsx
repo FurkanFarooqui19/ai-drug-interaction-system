@@ -46,11 +46,17 @@ export default function Navbar() {
           aria-label="DrugCheck home"
         >
           <span
-            className="flex h-9 w-9 items-center justify-center rounded-xl"
+            className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden flex-shrink-0"
             style={{ background: 'var(--color-primary)' }}
             aria-hidden="true"
           >
-            <ShieldCheck size={20} weight="fill" color="#fff" />
+            <img
+              src="/logo.jpg"
+              alt=""
+              className="w-full h-full object-cover"
+              width={36}
+              height={36}
+            />
           </span>
           <span className="hidden sm:inline" style={{ letterSpacing: '-0.02em' }}>DrugCheck</span>
         </Link>

@@ -43,11 +43,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="flex items-center gap-2">
             <div
-              className="flex items-center justify-center w-7 h-7 rounded-lg"
-              style={{ backgroundColor: 'var(--color-primary)' }}
+              className="flex items-center justify-center w-7 h-7 rounded-lg overflow-hidden flex-shrink-0"
               aria-hidden="true"
             >
-              <ShieldCheck size={14} weight="fill" color="#fff" />
+              <img src="/logo.jpg" alt="" className="w-full h-full object-cover" width={28} height={28} />
             </div>
             <span
               className="text-sm font-semibold font-heading"
