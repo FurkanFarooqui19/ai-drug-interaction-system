@@ -1,75 +1,102 @@
 /**
- * Hero risk status card — premium centerpiece with gradient, glow, optional pulse.
- * Safe: green | Moderate: amber | Dangerous: red. Dark-mode compatible.
+ * Risk Status Card — premium result display.
+ * Icon + label + clear hierarchy. No color-alone information.
+ * Safe: green | Moderate: amber | Dangerous: red (with pulse ring).
  */
+import { CheckCircle, Warning, WarningOctagon, ShieldCheck } from '@phosphor-icons/react'
+
 const RISK_CONFIG = {
   Safe: {
-    label: 'Safe',
-    gradient: 'from-emerald-500 to-teal-600 dark:from-emerald-500 dark:to-emerald-700',
-    glow: 'shadow-risk-glow-safe',
-    ring: 'ring-emerald-400/50 dark:ring-emerald-400/30',
-    bg: 'bg-emerald-500/10 dark:bg-emerald-500/5',
+    label: 'No Interaction Found',
+    sublabel: 'Safe combination',
+    Icon: CheckCircle,
+    iconWeight: 'fill',
+    primary: '#059669',
+    bg: 'var(--color-safe-bg)',
+    border: 'var(--color-safe-border)',
+    badgeText: 'SAFE',
+    badgeBg: 'var(--color-safe-bg)',
+    badgeColor: 'var(--color-safe)',
     pulse: false,
-    icon: '✓',
   },
   Moderate: {
-    label: 'Moderate',
-    gradient: 'from-amber-500 to-orange-500 dark:from-amber-500 dark:to-amber-600',
-    glow: 'shadow-risk-glow-moderate',
-    ring: 'ring-amber-400/50 dark:ring-amber-400/30',
-    bg: 'bg-amber-500/10 dark:bg-amber-500/5',
+    label: 'Use With Caution',
+    sublabel: 'Moderate interaction risk',
+    Icon: Warning,
+    iconWeight: 'fill',
+    primary: '#d97706',
+    bg: 'var(--color-moderate-bg)',
+    border: 'var(--color-moderate-border)',
+    badgeText: 'MODERATE',
+    badgeBg: 'var(--color-moderate-bg)',
+    badgeColor: 'var(--color-moderate)',
     pulse: false,
-    icon: '!',
   },
   Dangerous: {
-    label: 'Dangerous',
-    gradient: 'from-red-500 to-rose-600 dark:from-red-500 dark:to-red-700',
-    glow: 'shadow-risk-glow-dangerous',
-    ring: 'ring-red-400/50 dark:ring-red-400/30',
-    bg: 'bg-red-500/10 dark:bg-red-500/5',
+    label: 'Dangerous Interaction',
+    sublabel: 'Do not combine without medical supervision',
+    Icon: WarningOctagon,
+    iconWeight: 'fill',
+    primary: '#dc2626',
+    bg: 'var(--color-dangerous-bg)',
+    border: 'var(--color-dangerous-border)',
+    badgeText: 'DANGEROUS',
+    badgeBg: 'var(--color-dangerous-bg)',
+    badgeColor: 'var(--color-dangerous)',
     pulse: true,
-    icon: '⚠',
   },
 }
 
 export default function RiskStatusCard({ risk }) {
   const c = RISK_CONFIG[risk] || RISK_CONFIG.Safe
+  const { Icon } = c
+
   return (
     <div
-      className={`
-        relative w-full max-w-md mx-auto rounded-3xl overflow-hidden
-        border-2 ${c.ring}
-        ${c.glow}
-        animate-risk-enter
-        ${c.pulse ? 'animate-risk-pulse' : ''}
-      `}
+      className={`card animate-risk-enter ${c.pulse ? 'animate-pulse-ring' : ''}`}
+      style={{
+        backgroundColor: c.bg,
+        borderColor: c.border,
+        borderWidth: '1.5px',
+        boxShadow: c.pulse
+          ? `var(--shadow-card), 0 0 32px -4px rgba(220,38,38,0.25)`
+          : 'var(--shadow-card)',
+      }}
+      role="status"
+      aria-live="polite"
+      aria-label={`Interaction risk: ${c.badgeText}`}
     >
-      {/* Optional: soft gradient background behind content */}
-      <div className={`absolute inset-0 ${c.bg}`} aria-hidden />
-      <div
-        className={`absolute inset-0 bg-gradient-to-br ${c.gradient} opacity-90 dark:opacity-95`}
-        aria-hidden
-      />
-      <div className="relative px-8 py-8 sm:px-10 sm:py-10 text-center">
-        {/* Glowing status indicator */}
+      <div className="flex items-center gap-5 px-6 py-6 sm:px-8 sm:py-7">
+
+        {/* Icon container */}
         <div
-          className={`
-            inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl
-            bg-white/20 dark:bg-white/10 backdrop-blur-sm
-            border-2 border-white/40
-            mb-4
-          `}
+          className="flex-shrink-0 flex items-center justify-center rounded-2xl w-16 h-16"
+          style={{ backgroundColor: `${c.primary}18`, border: `1.5px solid ${c.primary}30` }}
+          aria-hidden="true"
         >
-          <span className="text-3xl sm:text-4xl font-bold text-white drop-shadow-sm" aria-hidden>
-            {c.icon}
-          </span>
+          <Icon size={36} weight={c.iconWeight} color={c.primary} />
         </div>
-        <p className="text-white/90 text-sm sm:text-base font-medium uppercase tracking-widest mb-1">
-          Interaction risk
-        </p>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-sm tracking-tight">
-          {c.label}
-        </h2>
+
+        {/* Text */}
+        <div className="min-w-0 flex-1">
+          {/* Badge */}
+          <span
+            className="badge mb-2"
+            style={{ backgroundColor: c.badgeBg, color: c.badgeColor, borderColor: c.border }}
+          >
+            {c.badgeText}
+          </span>
+
+          <h2
+            className="text-xl sm:text-2xl font-heading font-bold leading-tight"
+            style={{ color: c.primary, letterSpacing: '-0.02em' }}
+          >
+            {c.label}
+          </h2>
+          <p className="mt-0.5 text-sm font-body" style={{ color: 'var(--color-foreground-muted)' }}>
+            {c.sublabel}
+          </p>
+        </div>
       </div>
     </div>
   )

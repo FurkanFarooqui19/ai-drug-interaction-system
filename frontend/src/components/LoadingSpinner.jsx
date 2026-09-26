@@ -1,14 +1,26 @@
 /**
- * Loading spinner for Check Interaction
+ * Redesigned LoadingSpinner — accessible, minimal.
  */
-export default function LoadingSpinner() {
+export default function LoadingSpinner({ size = 24, label = 'Loading…' }) {
   return (
-    <div className="flex flex-col items-center gap-3 text-slate-600 dark:text-slate-400">
-      <div
-        className="w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin"
-        aria-hidden
+    <div
+      className="flex items-center justify-center gap-3"
+      role="status"
+      aria-label={label}
+    >
+      <span
+        className="inline-block rounded-full animate-spin"
+        style={{
+          width: size,
+          height: size,
+          border: '2.5px solid var(--color-border)',
+          borderTopColor: 'var(--color-primary)',
+        }}
+        aria-hidden="true"
       />
-      <span className="text-sm font-medium">Checking interactions…</span>
+      <span className="text-sm font-body" style={{ color: 'var(--color-foreground-muted)' }}>
+        {label}
+      </span>
     </div>
   )
 }

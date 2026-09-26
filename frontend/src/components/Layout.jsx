@@ -1,5 +1,6 @@
 /**
- * Page layout: max-width container, consistent padding, section spacing.
+ * Layout — shared page container.
+ * Card now uses CSS design tokens.
  */
 export default function Layout({ children, className = '', maxWidth = 'max-w-4xl' }) {
   return (
@@ -12,11 +13,14 @@ export default function Layout({ children, className = '', maxWidth = 'max-w-4xl
 export function SectionHeader({ title, subtitle, className = '' }) {
   return (
     <div className={`mb-8 ${className}`}>
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
+      <h2
+        className="font-heading font-bold text-2xl sm:text-3xl"
+        style={{ color: 'var(--color-foreground)', letterSpacing: '-0.02em' }}
+      >
         {title}
       </h2>
       {subtitle && (
-        <p className="mt-2 text-slate-600 dark:text-slate-400">
+        <p className="mt-2 text-sm font-body" style={{ color: 'var(--color-foreground-muted)' }}>
           {subtitle}
         </p>
       )}
@@ -24,13 +28,10 @@ export function SectionHeader({ title, subtitle, className = '' }) {
   )
 }
 
-/** Card: use card-glass for glassmorphism on premium bg, or card-solid-light for solid panels. */
-export function Card({ children, className = '', glass }) {
-  const base = glass
-    ? 'card-glass'
-    : 'rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800/90'
+/** Card: consistent elevated surface using design token. */
+export function Card({ children, className = '' }) {
   return (
-    <div className={`${base} p-6 ${className}`}>
+    <div className={`card p-6 ${className}`}>
       {children}
     </div>
   )

@@ -3,7 +3,7 @@
  * In dev, call backend directly to avoid proxy 404s. In build, use same origin (or set VITE_API_URL).
  */
 const API_BASE = typeof import.meta !== 'undefined' && import.meta.env?.DEV
-  ? (import.meta.env.VITE_API_URL || 'http://localhost:8001')
+  ? (import.meta.env.VITE_API_URL || 'http://localhost:8000')
   : (import.meta.env?.VITE_API_URL || '')
 
 export async function checkInteractions(drugs) {

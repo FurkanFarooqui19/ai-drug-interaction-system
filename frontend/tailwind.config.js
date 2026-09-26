@@ -7,58 +7,75 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        heading: ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        body: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+      },
       colors: {
         medical: {
-          safe: '#10b981',
-          moderate: '#f59e0b',
-          dangerous: '#ef4444',
-          primary: '#0ea5e9',
-          dark: '#0f172a',
+          safe:      '#059669',
+          moderate:  '#d97706',
+          dangerous: '#dc2626',
+          primary:   '#0891B2',
+          'primary-dark': '#0e7490',
+          'primary-light': '#e0f2fe',
+          secondary: '#22D3EE',
+          accent:    '#059669',
         },
       },
       backgroundImage: {
-        'gradient-medical': 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%)',
-        'gradient-card': 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-        /* Premium app background: mesh-style radial layers (dark mode) */
-        'mesh-dark': 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent), radial-gradient(ellipse 60% 40% at 100% 50%, rgba(99, 102, 241, 0.08), transparent), radial-gradient(ellipse 50% 30% at 0% 80%, rgba(139, 92, 246, 0.06), transparent), radial-gradient(ellipse 100% 100% at 50% 50%, rgba(15, 23, 42, 0.98), transparent)',
-        /* Light mode: soft depth */
-        'mesh-light': 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(14, 165, 233, 0.06), transparent), radial-gradient(ellipse 50% 40% at 100% 100%, rgba(99, 102, 241, 0.04), transparent)',
+        'gradient-hero': 'linear-gradient(135deg, #0e7490 0%, #0891B2 45%, #0369a1 100%)',
+        'gradient-safe': 'linear-gradient(135deg, #059669, #10b981)',
+        'gradient-moderate': 'linear-gradient(135deg, #d97706, #f59e0b)',
+        'gradient-dangerous': 'linear-gradient(135deg, #dc2626, #ef4444)',
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
-        'glass-lg': '0 8px 32px 0 rgba(31, 38, 135, 0.2)',
-        'dark-card': '0 4px 24px rgba(0,0,0,0.25)',
-        'glass-dark': '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.05)',
-        'risk-glow-safe': '0 0 40px -8px rgba(16, 185, 129, 0.5)',
-        'risk-glow-moderate': '0 0 40px -8px rgba(245, 158, 11, 0.5)',
-        'risk-glow-dangerous': '0 0 48px -4px rgba(239, 68, 68, 0.5)',
+        'card':     '0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 6px -1px rgb(0 0 0 / 0.06)',
+        'card-lg':  '0 8px 24px -4px rgb(0 0 0 / 0.10), 0 4px 10px -2px rgb(0 0 0 / 0.07)',
+        'primary':  '0 4px 14px rgba(8,145,178,0.35)',
+        'safe-glow':      '0 0 24px -4px rgba(5,150,105,0.4)',
+        'moderate-glow':  '0 0 24px -4px rgba(217,119,6,0.4)',
+        'dangerous-glow': '0 0 32px -4px rgba(220,38,38,0.45)',
+        'inner-sm': 'inset 0 1px 3px rgb(0 0 0 / 0.06)',
       },
       animation: {
-        'glow-slow': 'glow-pulse 8s ease-in-out infinite',
-        'risk-enter': 'risk-enter 0.5s ease-out forwards',
-        'risk-pulse': 'risk-pulse 2s ease-in-out infinite',
-        'bar-fill': 'bar-fill 0.8s ease-out forwards',
+        'fade-up':    'fade-up 0.3s cubic-bezier(0.16,1,0.3,1) both',
+        'fade-in':    'fade-in 0.25s cubic-bezier(0.16,1,0.3,1) both',
+        'risk-enter': 'fade-up 0.35s cubic-bezier(0.16,1,0.3,1) both',
+        'chat-up':    'chat-slide-up 0.25s cubic-bezier(0.16,1,0.3,1) both',
+        'pulse-ring': 'pulse-ring 2s ease-in-out infinite',
+        'skeleton':   'skeleton-shimmer 1.4s ease infinite',
+        'dot-1':      'dots-bounce 1.2s ease-in-out 0s infinite',
+        'dot-2':      'dots-bounce 1.2s ease-in-out 0.2s infinite',
+        'dot-3':      'dots-bounce 1.2s ease-in-out 0.4s infinite',
       },
       keyframes: {
-        'glow-pulse': {
-          '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
-          '50%': { opacity: '0.9', transform: 'scale(1.02)' },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(10px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
         },
-        'risk-enter': {
-          '0%': { opacity: '0', transform: 'scale(0.92) translateY(8px)' },
-          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        'fade-in': {
+          from: { opacity: '0' },
+          to:   { opacity: '1' },
         },
-        'risk-pulse': {
-          '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.4)' },
-          '50%': { opacity: '1', boxShadow: '0 0 24px 8px rgba(239, 68, 68, 0.25)' },
+        'chat-slide-up': {
+          from: { opacity: '0', transform: 'translateY(12px) scale(0.97)' },
+          to:   { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
-        'bar-fill': {
-          '0%': { width: '0%' },
-          '100%': { width: 'var(--bar-width, 0%)' },
+        'pulse-ring': {
+          '0%':   { boxShadow: '0 0 0 0 rgba(220,38,38,0.35)' },
+          '70%':  { boxShadow: '0 0 0 12px rgba(220,38,38,0)' },
+          '100%': { boxShadow: '0 0 0 0 rgba(220,38,38,0)' },
+        },
+        'skeleton-shimmer': {
+          '0%':   { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+        'dots-bounce': {
+          '0%, 80%, 100%': { transform: 'translateY(0)', opacity: '0.4' },
+          '40%':            { transform: 'translateY(-4px)', opacity: '1' },
         },
       },
-      backdropBlur: { xs: '2px' },
-      transitionDuration: { 400: '400ms' },
     },
   },
   plugins: [],

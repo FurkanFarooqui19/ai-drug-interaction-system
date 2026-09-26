@@ -1,8 +1,9 @@
 /**
- * Voice input using Web Speech API. Speaks medicine names into the text field.
- * Supported in Chrome, Edge, Safari. Requires HTTPS or localhost.
+ * Redesigned VoiceInputButton — SVG icon, design token styling.
+ * Web Speech API. Chrome/Edge/Safari on HTTPS or localhost.
  */
 import { useState, useRef, useEffect } from 'react'
+import { Microphone, MicrophoneSlash } from '@phosphor-icons/react'
 
 function getSpeechRecognition() {
   if (typeof window === 'undefined') return null
@@ -29,31 +30,32 @@ export default function VoiceInputButton({ onTranscript, disabled }) {
     rec.onend = () => setListening(false)
     rec.onerror = () => setListening(false)
     recognitionRef.current = rec
-    return () => {
-      try { rec.abort(); } catch {}
-    }
+    return () => { try { rec.abort() } catch {} }
   }, [onTranscript])
 
   const toggle = () => {
     const rec = recognitionRef.current
     if (!rec) return
-    if (listening) {
-      rec.stop()
-      setListening(false)
-    } else {
-      try {
-        rec.start()
-        setListening(true)
-      } catch (e) {
-        setListening(false)
-      }
+    if (listening) { rec.stop(); setListening(false) }
+    else {
+      try { rec.start(); setListening(true) }
+      catch { setListening(false) }
     }
   }
 
   if (!supported) {
     return (
-      <span className="text-xs text-slate-400" title="Voice input not supported in this browser (try Chrome)">
-        🎤 Unavailable
+      <span
+        className="flex items-center gap-1.5 text-xs font-body px-3 py-2.5 rounded-lg flex-shrink-0"
+        style={{
+          color: 'var(--color-foreground-subtle)',
+          border: '1.5px solid var(--color-border)',
+          backgroundColor: 'var(--color-surface-raised)',
+        }}
+        title="Voice input not supported in this browser (try Chrome or Edge)"
+      >
+        <MicrophoneSlash size={14} weight="regular" aria-hidden="true" />
+        <span className="hidden sm:inline">Voice unavailable</span>
       </span>
     )
   }
@@ -63,17 +65,28 @@ export default function VoiceInputButton({ onTranscript, disabled }) {
       type="button"
       onClick={toggle}
       disabled={disabled}
-      title={listening ? 'Listening… Click to stop' : 'Speak medicine names'}
-      className={`
-        flex items-center gap-2 px-3 py-2 rounded-xl border-2 transition shrink-0
-        ${listening
-          ? 'border-red-400 bg-red-50 text-red-700 animate-pulse'
-          : 'border-slate-200 bg-white hover:border-sky-400 hover:bg-sky-50 text-slate-700'}
-        disabled:opacity-50 disabled:cursor-not-allowed
-      `}
+      title={listening ? 'Listening… click to stop' : 'Click to speak drug names'}
+      aria-label={listening ? 'Stop voice input' : 'Start voice input'}
+      aria-pressed={listening}
+      className="flex items-center gap-2 px-3 py-2.5 rounded-xl flex-shrink-0 text-sm font-semibold font-body transition-all duration-150"
+      style={{
+        border: `1.5px solid ${listening ? '#dc2626' : 'var(--color-border-strong)'}`,
+        backgroundColor: listening ? 'var(--color-dangerous-bg)' : 'var(--color-surface)',
+        color: listening ? 'var(--color-dangerous)' : 'var(--color-foreground-muted)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.55 : 1,
+        animation: listening ? 'none' : undefined,
+      }}
     >
-      <span className="text-lg" aria-hidden>{listening ? '🔴' : '🎤'}</span>
-      <span className="text-sm font-medium">{listening ? 'Listening…' : 'Voice input'}</span>
+      <Microphone
+        size={15}
+        weight={listening ? 'fill' : 'regular'}
+        aria-hidden="true"
+        style={{
+          color: listening ? 'var(--color-dangerous)' : 'var(--color-foreground-subtle)',
+        }}
+      />
+      <span className="hidden sm:inline">{listening ? 'Listening…' : 'Voice'}</span>
     </button>
   )
 }

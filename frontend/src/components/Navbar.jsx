@@ -1,13 +1,16 @@
 /**
- * Sticky navbar: logo, nav links, dark mode toggle, mobile hamburger.
+ * Redesigned Navbar — clean healthcare SaaS aesthetic.
+ * Figtree font, shield logo, accessible dark mode toggle.
  */
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
+import {
+  ShieldCheck, List, X, Sun, Moon,
+} from '@phosphor-icons/react'
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Home' },
-  { to: '/scan', label: 'Scan Prescription' },
+  { to: '/', label: 'Checker' },
   { to: '/history', label: 'History' },
   { to: '/analytics', label: 'Analytics' },
   { to: '/drug-info', label: 'Drug Info' },
@@ -21,34 +24,52 @@ export default function Navbar() {
 
   return (
     <header
-      className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-sm transition-shadow dark:bg-slate-900/95 dark:border-slate-700/80"
-      style={{ scrollMarginTop: 0 }}
+      className="sticky top-0 z-50 w-full"
+      style={{
+        backgroundColor: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-border)',
+        boxShadow: '0 1px 0 var(--color-border)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        background: isDark
+          ? 'rgba(19, 31, 53, 0.95)'
+          : 'rgba(255, 255, 255, 0.95)',
+      }}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+
         {/* Logo */}
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-2 text-slate-800 dark:text-white"
+          className="flex shrink-0 items-center gap-2.5 font-heading font-bold text-lg"
+          style={{ color: 'var(--color-foreground)', textDecoration: 'none' }}
+          aria-label="DrugCheck home"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-medical text-white text-lg font-bold shadow">
-            D
+          <span
+            className="flex h-9 w-9 items-center justify-center rounded-xl"
+            style={{ background: 'var(--color-primary)' }}
+            aria-hidden="true"
+          >
+            <ShieldCheck size={20} weight="fill" color="#fff" />
           </span>
-          <span className="font-semibold text-lg hidden sm:inline">DrugCheck</span>
+          <span className="hidden sm:inline" style={{ letterSpacing: '-0.02em' }}>DrugCheck</span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
           {NAV_ITEMS.map(({ to, label }) => {
             const active = location.pathname === to || (to !== '/' && location.pathname.startsWith(to))
             return (
               <Link
                 key={to}
                 to={to}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  active
-                    ? 'bg-sky-100 text-sky-700 dark:bg-sky-900/50 dark:text-sky-300'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
-                }`}
+                className="rounded-lg px-3 py-2 text-sm font-medium transition-colors font-body"
+                style={{
+                  color: active ? 'var(--color-primary)' : 'var(--color-foreground-muted)',
+                  backgroundColor: active ? 'var(--color-primary-light)' : 'transparent',
+                  textDecoration: 'none',
+                }}
+                aria-current={active ? 'page' : undefined}
               >
                 {label}
               </Link>
@@ -61,34 +82,50 @@ export default function Navbar() {
           <button
             type="button"
             onClick={toggle}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+            className="btn-ghost flex h-9 w-9 items-center justify-center rounded-lg p-0"
+            style={{
+              border: '1.5px solid var(--color-border)',
+              backgroundColor: 'var(--color-surface-raised)',
+            }}
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {isDark ? (
-              <span className="text-lg">☀️</span>
-            ) : (
-              <span className="text-lg">🌙</span>
-            )}
+            {isDark
+              ? <Sun size={16} weight="bold" style={{ color: 'var(--color-foreground-muted)' }} />
+              : <Moon size={16} weight="bold" style={{ color: 'var(--color-foreground-muted)' }} />
+            }
           </button>
 
-          {/* Mobile menu button */}
+          {/* Mobile hamburger */}
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 md:hidden dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
-            aria-label="Toggle menu"
+            className="flex h-9 w-9 items-center justify-center rounded-lg md:hidden"
+            style={{
+              border: '1.5px solid var(--color-border)',
+              backgroundColor: 'var(--color-surface-raised)',
+              color: 'var(--color-foreground-muted)',
+            }}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
-            <span className="text-xl">{mobileOpen ? '✕' : '☰'}</span>
+            {mobileOpen ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
           </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-t border-slate-200 bg-white px-4 py-3 md:hidden dark:border-slate-700 dark:bg-slate-900">
-          <nav className="flex flex-col gap-1">
+        <div
+          id="mobile-menu"
+          style={{
+            borderTop: '1px solid var(--color-border)',
+            backgroundColor: 'var(--color-surface)',
+          }}
+          className="px-4 py-3 md:hidden"
+        >
+          <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
             {NAV_ITEMS.map(({ to, label }) => {
               const active = location.pathname === to
               return (
@@ -96,11 +133,13 @@ export default function Navbar() {
                   key={to}
                   to={to}
                   onClick={() => setMobileOpen(false)}
-                  className={`rounded-lg px-4 py-3 text-sm font-medium ${
-                    active
-                      ? 'bg-sky-100 text-sky-700 dark:bg-sky-900/50 dark:text-sky-300'
-                      : 'text-slate-600 dark:text-slate-300'
-                  }`}
+                  className="rounded-lg px-4 py-3 text-sm font-medium font-body transition-colors"
+                  style={{
+                    color: active ? 'var(--color-primary)' : 'var(--color-foreground-muted)',
+                    backgroundColor: active ? 'var(--color-primary-light)' : 'transparent',
+                    textDecoration: 'none',
+                  }}
+                  aria-current={active ? 'page' : undefined}
                 >
                   {label}
                 </Link>

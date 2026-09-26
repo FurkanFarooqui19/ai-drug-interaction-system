@@ -1,33 +1,91 @@
 /**
- * Professional footer with disclaimer and links.
+ * Redesigned Footer — professional healthcare footer with prominent disclaimer.
  */
 import { Link } from 'react-router-dom'
+import { ShieldCheck, Info } from '@phosphor-icons/react'
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900/80">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Medical disclaimer
-            </p>
-            <p className="max-w-2xl text-xs text-slate-600 dark:text-slate-500">
-              This tool is for informational purposes only and does not replace professional medical advice.
-              Always consult your doctor or pharmacist before starting, stopping, or combining medications.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-4 text-sm">
-            <Link to="/about" className="text-slate-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400">
-              About
-            </Link>
-            <Link to="/drug-info" className="text-slate-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-400">
-              Drug Info
-            </Link>
-          </div>
+    <footer
+      className="mt-auto"
+      style={{
+        borderTop: '1px solid var(--color-border)',
+        backgroundColor: 'var(--color-surface)',
+      }}
+    >
+      {/* Medical disclaimer — prominent */}
+      <div
+        className="px-4 py-4 sm:px-6"
+        style={{
+          backgroundColor: 'var(--color-surface-raised)',
+          borderBottom: '1px solid var(--color-border)',
+        }}
+      >
+        <div className="mx-auto max-w-6xl flex items-start gap-3">
+          <Info
+            size={16}
+            weight="bold"
+            aria-hidden="true"
+            className="flex-shrink-0 mt-0.5"
+            style={{ color: 'var(--color-primary)' }}
+          />
+          <p className="text-xs leading-relaxed font-body" style={{ color: 'var(--color-foreground-muted)' }}>
+            <strong className="font-semibold" style={{ color: 'var(--color-foreground)' }}>Medical Disclaimer: </strong>
+            This tool is for informational purposes only and does not replace professional medical advice, diagnosis, or treatment.
+            Always consult your doctor or pharmacist before starting, stopping, or combining medications.
+          </p>
         </div>
-        <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-500">
-          © DrugCheck — AI Drug Interaction Warning System
+      </div>
+
+      {/* Footer links */}
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Brand */}
+          <div className="flex items-center gap-2">
+            <div
+              className="flex items-center justify-center w-7 h-7 rounded-lg"
+              style={{ backgroundColor: 'var(--color-primary)' }}
+              aria-hidden="true"
+            >
+              <ShieldCheck size={14} weight="fill" color="#fff" />
+            </div>
+            <span
+              className="text-sm font-semibold font-heading"
+              style={{ color: 'var(--color-foreground)' }}
+            >
+              DrugCheck
+            </span>
+            <span className="text-xs font-body" style={{ color: 'var(--color-foreground-subtle)' }}>
+              · AI Drug Interaction System
+            </span>
+          </div>
+
+          {/* Nav links */}
+          <nav className="flex flex-wrap gap-4" aria-label="Footer navigation">
+            {[
+              { to: '/about', label: 'About' },
+              { to: '/drug-info', label: 'Drug Info' },
+              { to: '/history', label: 'History' },
+            ].map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className="text-sm font-body transition-colors"
+                style={{ color: 'var(--color-foreground-muted)', textDecoration: 'none' }}
+                onMouseEnter={(e) => { e.target.style.color = 'var(--color-primary)' }}
+                onMouseLeave={(e) => { e.target.style.color = 'var(--color-foreground-muted)' }}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <p
+          className="mt-4 text-xs font-body text-center"
+          style={{ color: 'var(--color-foreground-subtle)' }}
+        >
+          © {new Date().getFullYear()} DrugCheck — For educational and informational use only.
         </p>
       </div>
     </footer>
